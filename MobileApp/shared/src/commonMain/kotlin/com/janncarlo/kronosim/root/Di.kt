@@ -145,9 +145,9 @@ private val presentationModule = module {
         PaywallViewModel(
             placementId = placementId,
             subscriptionRepository = get(),
-                         creditRepository = get(),
-                         userRepository = get(),
-                         featureFlagManager = get(),
+            creditRepository = get(),
+            userRepository = get(),
+            featureFlagManager = get(),
         )
     }
     viewModelOf(::AccountViewModel)
@@ -199,11 +199,11 @@ private fun Module.initializeCreditSystem() {
  */
 private fun isSubscriptionMockActive(): Boolean {
     val key =
-    if (isAndroid) {
-        BuildConfig.SUBSCRIPTION_PROVIDER_ANDROID_API_KEY
-    } else {
-        BuildConfig.SUBSCRIPTION_PROVIDER_IOS_API_KEY
-    }
+        if (isAndroid) {
+            BuildConfig.SUBSCRIPTION_PROVIDER_ANDROID_API_KEY
+        } else {
+            BuildConfig.SUBSCRIPTION_PROVIDER_IOS_API_KEY
+        }
     return key.isBlank() || key == MockSubscriptionProvider.PLACEHOLDER_KEY
 }
 
