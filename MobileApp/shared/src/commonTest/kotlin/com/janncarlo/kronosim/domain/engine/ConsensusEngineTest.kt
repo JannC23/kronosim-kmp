@@ -1,0 +1,52 @@
+package com.janncarlo.kronosim.domain.engine
+
+import com.janncarlo.kronosim.domain.model.ChaosScenario
+import com.janncarlo.kronosim.domain.model.NodeRole
+import kotlin.random.Random
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+
+class ConsensusEngineTest {
+    @Test
+    fun `createTopology initializes N1 as leader and others as followers`() {
+        val engine = ConsensusEngine(Random(42))
+        val snapshot = engine.createTopology(5)
+
+        assertEquals(5, snapshot.nodes.size)
+        assertEquals(NodeRole.LEADER, snapshot.nodes.first().role)
+        assertEquals(4, snapshot.nodes.count { it.role == NodeRole.FOLLOWER })
+    }
+
+    @Test
+    fun `leader crash triggers new leader election via majority quorum`() {
+        val engine = ConsensusEngine(Random(7))
+        var snapshot = engine.createTopology(5)
+        snapshot = engine.applyScenario(snapshot, ChaosScenario.LEADER_CRASH)
+
+        repeat(25) {
+            snapshot = engine.step(snapshot)
+        }
+
+        val newLeader = snapshot.nodes.firstOrNull { it.role == NodeRole.LEADER }
+        assertNotNull(newLeader)
+        assertTrue(newLeader.id != 1)
+        assertTrue(newLeader.currentTerm >= 2)
+    }
+
+    @Test
+    fun `client write commits across majority quorum`() {
+        val engine = ConsensusEngine(Random(1))
+        var snapshot = engine.createTopology(3)
+        snapshot = engine.proposeClientWrite(snapshot)
+
+        repeat(8) {
+            snapshot = engine.step(snapshot)
+        }
+
+        val leader = snapshot.nodes.first { it.role == NodeRole.LEADER }
+        assertEquals(1, leader.commitIndex)
+        assertTrue(leader.logEntries.first().isCommitted)
+    }
+}
