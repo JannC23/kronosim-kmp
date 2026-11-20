@@ -1,10 +1,10 @@
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.ComposeUIViewController
-import com.kotlinfoundation.koko.root.App
-import com.kotlinfoundation.koko.util.LocalNativeViewFactory
-import com.kotlinfoundation.koko.util.NativeViewFactory
-import com.kotlinfoundation.koko.util.SwiftLibDependencyFactory
-import com.kotlinfoundation.koko.util.swiftLibDependenciesModule
+import com.janncarlo.kronosim.root.App
+import com.janncarlo.kronosim.util.LocalNativeViewFactory
+import com.janncarlo.kronosim.util.NativeViewFactory
+import com.janncarlo.kronosim.util.SwiftLibDependencyFactory
+import com.janncarlo.kronosim.util.swiftLibDependenciesModule
 import org.koin.core.KoinApplication
 import platform.UIKit.UIViewController
 

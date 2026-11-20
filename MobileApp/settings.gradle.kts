@@ -1,4 +1,4 @@
-rootProject.name = "Koko"
+rootProject.name = "KronoSim"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
