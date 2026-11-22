@@ -25,6 +25,10 @@ class ConsensusEngine(
         val commandCounter: Int = 1,
     )
 
+    private data class StepContext(
+        var nextEventId: Long,
+    )
+
     fun createTopology(nodeCount: Int): ClusterSnapshot {
         val clampedCount = nodeCount.coerceIn(MIN_NODES, MAX_NODES)
         val nodes = (1..clampedCount).map { index ->
@@ -201,20 +205,23 @@ class ConsensusEngine(
         var nodes = snapshot.nodes.toMutableList()
         var events = snapshot.events
         var survivingPackets = mutableListOf<NetworkPacket>()
+        val context = StepContext(
+            nextEventId = (snapshot.events.maxOfOrNull { it.id } ?: 0L) + 1L,
+        )
 
         advancePackets(snapshot, nodes, survivingPackets)
 
-        commitReplicatedEntries(snapshot, nodes)?.let { commitEvent ->
+        commitReplicatedEntries(snapshot, nodes, context)?.let { commitEvent ->
             events = (listOf(commitEvent) + events).take(MAX_EVENTS)
         }
 
         sendHeartbeats(snapshot, nextTick, nodes, survivingPackets)
 
-        advanceElectionTimers(nextTick, snapshot, nodes)?.let { timerEvent ->
+        advanceElectionTimers(nextTick, snapshot, nodes, context)?.let { timerEvent ->
             events = (listOf(timerEvent) + events).take(MAX_EVENTS)
         }
 
-        val electionEvents = holdElections(nextTick, snapshot, nodes)
+        val electionEvents = holdElections(nextTick, snapshot, nodes, context)
         events = (electionEvents + events).take(MAX_EVENTS)
 
         return snapshot.copy(
@@ -325,6 +332,7 @@ class ConsensusEngine(
     private fun commitReplicatedEntries(
         snapshot: ClusterSnapshot,
         nodes: MutableList<ClusterNode>,
+        context: StepContext,
     ): SimulationEvent? {
         val quorumSize = snapshot.nodes.size / 2 + 1
         var newCommitEvent: SimulationEvent? = null
@@ -357,12 +365,7 @@ class ConsensusEngine(
             }
 
             newCommitEvent = SimulationEvent(
-                id = nextEventId(
-                    ClusterSnapshot(
-                        tick = snapshot.tick,
-                        events = snapshot.events,
-                    ),
-                ),
+                id = context.nextEventId++,
                 tick = snapshot.tick + 1L,
                 title = "Quorum Commit #$newCommitIndex",
                 detail = "Partition replicated entry #$newCommitIndex to $quorumSize/${snapshot.nodes.size} nodes.",
@@ -400,6 +403,7 @@ class ConsensusEngine(
         nextTick: Long,
         snapshot: ClusterSnapshot,
         nodes: MutableList<ClusterNode>,
+        context: StepContext,
     ): SimulationEvent? {
         var event: SimulationEvent? = null
         for (i in nodes.indices) {
@@ -418,7 +422,7 @@ class ConsensusEngine(
                     electionProgress = CANDIDATE_RETRY_PROGRESS,
                 )
                 event = SimulationEvent(
-                    id = nextEventId(snapshot),
+                    id = context.nextEventId++,
                     tick = nextTick,
                     title = "${node.label} Election Timeout",
                     detail = "Term ${node.currentTerm + 1} election started.",
@@ -433,6 +437,7 @@ class ConsensusEngine(
         nextTick: Long,
         snapshot: ClusterSnapshot,
         nodes: MutableList<ClusterNode>,
+        context: StepContext,
     ): List<SimulationEvent> {
         val quorumSize = snapshot.nodes.size / 2 + 1
         val events = mutableListOf<SimulationEvent>()
@@ -464,7 +469,7 @@ class ConsensusEngine(
                     }
                 }
                 events += SimulationEvent(
-                    id = nextEventId(snapshot),
+                    id = context.nextEventId++,
                     tick = nextTick,
                     title = "${candidate.label} Elected Leader (Term $newTerm)",
                     detail = "Won $quorumSize-node quorum in a reachable partition.",

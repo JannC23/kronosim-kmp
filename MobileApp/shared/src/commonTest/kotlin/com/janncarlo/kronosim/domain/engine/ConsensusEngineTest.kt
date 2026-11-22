@@ -67,6 +67,7 @@ class ConsensusEngineTest {
         }
         assertNotNull(majorityLeader)
         assertTrue(majorityLeader.currentTerm <= 3)
+        assertEquals(snapshot.events.size, snapshot.events.map { it.id }.distinct().size)
     }
 
     @Test
