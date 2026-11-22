@@ -139,6 +139,11 @@ fun SimulatorScreen(
                         Text("Step")
                     }
                     OutlinedButton(
+                        onClick = { onUiEvent(SimulatorUiEvent.HealNetwork) },
+                    ) {
+                        Text("Heal Network")
+                    }
+                    OutlinedButton(
                         onClick = {
                             onUiEvent(SimulatorUiEvent.SaveCurrentTopology("Snapshot #${uiState.tick}"))
                         },

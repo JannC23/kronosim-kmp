@@ -125,4 +125,17 @@ class ConsensusEngineTest {
 
         assertEquals(setOf(setOf(1, 2), setOf(3, 4, 5)), partitions.map { it }.toSet())
     }
+
+    @Test
+    fun `healNetwork restores every severed link`() {
+        val engine = ConsensusEngine(Random(1))
+        val split = engine.applyScenario(
+            engine.createTopology(5),
+            ChaosScenario.SPLIT_BRAIN,
+        )
+
+        val healed = engine.healNetwork(split)
+
+        assertTrue(healed.links.none { it.isPartitioned })
+    }
 }

@@ -74,6 +74,12 @@ For iOS, open `iosApp/iosApp.xcodeproj` in Xcode and run the `iosApp` scheme.
 You can also crash or recover any node by tapping it. Tap the midpoint of a
 network link to sever or heal that link.
 
+## Screenshots
+
+| Healthy cluster | Split-brain partition | Client write |
+|---|---|---|
+| ![Healthy cluster](docs/screenshots/01-healthy-cluster.png) | ![Split-brain partition](docs/screenshots/02-split-brain.png) | ![Client write](docs/screenshots/03-client-write.png) |
+
 ## Kotlin Multiplatform architecture
 
 The consensus engine, cluster model, partition analysis, and UI state live in

@@ -155,6 +155,21 @@ class ConsensusEngine(
         )
     }
 
+    fun healNetwork(snapshot: ClusterSnapshot): ClusterSnapshot {
+        val restoredLinks = snapshot.links.map { it.copy(isPartitioned = false) }
+        return appendEvent(
+            snapshot = snapshot.copy(
+                links = restoredLinks,
+                packets = snapshot.packets.filter { packet ->
+                    isConnected(packet.fromNodeId, packet.toNodeId, restoredLinks)
+                },
+            ),
+            title = "Network Partition Healed",
+            detail = "All links restored; the cluster can reconcile logs and converge.",
+            isAlert = false,
+        )
+    }
+
     fun proposeClientWrite(snapshot: ClusterSnapshot): ClusterSnapshot {
         val leader = snapshot.nodes
             .filter { it.role == NodeRole.LEADER && it.isAlive }

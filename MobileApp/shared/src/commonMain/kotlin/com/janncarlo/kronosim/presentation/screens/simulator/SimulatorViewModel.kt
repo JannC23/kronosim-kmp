@@ -65,6 +65,8 @@ class SimulatorViewModel(
 
             SimulatorUiEvent.ProposeWrite -> snapshot.update { engine.proposeClientWrite(it) }
 
+            SimulatorUiEvent.HealNetwork -> snapshot.update { engine.healNetwork(it) }
+
             is SimulatorUiEvent.ChangeNodeCount -> {
                 selectedNodeId.value = null
                 snapshot.value = engine.createTopology(event.count)

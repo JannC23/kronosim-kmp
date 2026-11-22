@@ -56,6 +56,7 @@ sealed interface SimulatorUiEvent {
     data object TogglePlayPause : SimulatorUiEvent
     data object StepOnce : SimulatorUiEvent
     data object ProposeWrite : SimulatorUiEvent
+    data object HealNetwork : SimulatorUiEvent
     data class ChangeNodeCount(val count: Int) : SimulatorUiEvent
     data class NodeTapped(val nodeId: Int) : SimulatorUiEvent
     data class LinkTapped(val fromId: Int, val toId: Int) : SimulatorUiEvent
