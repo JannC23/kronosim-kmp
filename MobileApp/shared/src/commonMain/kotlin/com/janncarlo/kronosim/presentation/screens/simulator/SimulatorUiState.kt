@@ -1,12 +1,19 @@
 package com.janncarlo.kronosim.presentation.screens.simulator
 
 import com.janncarlo.kronosim.data.source.local.entity.SavedTopologyEntity
+import com.janncarlo.kronosim.domain.engine.alivePartitions
 import com.janncarlo.kronosim.domain.model.ChaosScenario
 import com.janncarlo.kronosim.domain.model.ClusterNode
 import com.janncarlo.kronosim.domain.model.NetworkLink
 import com.janncarlo.kronosim.domain.model.NetworkPacket
 import com.janncarlo.kronosim.domain.model.NodeRole
 import com.janncarlo.kronosim.domain.model.SimulationEvent
+
+enum class QuorumStatus {
+    HEALTHY,
+    PARTITIONED,
+    LOST,
+}
 
 data class SimulatorUiState(
     val isRunning: Boolean = true,
@@ -27,8 +34,22 @@ data class SimulatorUiState(
     val quorumThreshold: Int
         get() = (nodes.size / 2) + 1
 
-    val hasHealthyQuorum: Boolean
-        get() = aliveCount >= quorumThreshold && activeLeader != null
+    val largestPartitionSize: Int
+        get() = alivePartitions(nodes, links).maxOfOrNull { it.size } ?: 0
+
+    val quorumStatus: QuorumStatus
+        get() {
+            val partitions = alivePartitions(nodes, links)
+            val quorumPartition = partitions.firstOrNull { partition ->
+                partition.size >= quorumThreshold &&
+                    nodes.any { it.id in partition && it.role == NodeRole.LEADER && it.isAlive }
+            }
+            return when {
+                partitions.size == 1 && quorumPartition != null -> QuorumStatus.HEALTHY
+                quorumPartition != null -> QuorumStatus.PARTITIONED
+                else -> QuorumStatus.LOST
+            }
+        }
 }
 
 sealed interface SimulatorUiEvent {

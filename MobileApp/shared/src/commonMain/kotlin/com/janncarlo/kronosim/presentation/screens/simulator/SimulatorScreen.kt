@@ -82,14 +82,14 @@ fun SimulatorScreen(
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "Tick #${uiState.tick} • Quorum ${uiState.aliveCount}/${uiState.nodes.size} (min ${uiState.quorumThreshold})",
+                            text = "Tick #${uiState.tick} • Quorum ${uiState.largestPartitionSize}/${uiState.nodes.size} (min ${uiState.quorumThreshold})",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 },
                 actions = {
-                    QuorumStatusBadge(isHealthy = uiState.hasHealthyQuorum)
+                    QuorumStatusBadge(status = uiState.quorumStatus)
                 },
             )
         },
@@ -132,6 +132,11 @@ fun SimulatorScreen(
                         onClick = { onUiEvent(SimulatorUiEvent.TogglePlayPause) },
                     ) {
                         Text(if (uiState.isRunning) "Pause" else "Resume")
+                    }
+                    OutlinedButton(
+                        onClick = { onUiEvent(SimulatorUiEvent.StepOnce) },
+                    ) {
+                        Text("Step")
                     }
                     OutlinedButton(
                         onClick = {
@@ -228,15 +233,19 @@ fun SimulatorScreen(
 }
 
 @Composable
-private fun QuorumStatusBadge(isHealthy: Boolean) {
-    val bgColor = if (isHealthy) Color(0xFF1B5E20) else Color(0xFFB71C1C)
+private fun QuorumStatusBadge(status: QuorumStatus) {
+    val (label, bgColor) = when (status) {
+        QuorumStatus.HEALTHY -> "QUORUM OK" to Color(0xFF1B5E20)
+        QuorumStatus.PARTITIONED -> "NETWORK SPLIT" to Color(0xFFE65100)
+        QuorumStatus.LOST -> "NO QUORUM" to Color(0xFFB71C1C)
+    }
     Surface(
         color = bgColor,
         shape = RoundedCornerShape(50),
         modifier = Modifier.padding(end = 12.dp),
     ) {
         Text(
-            text = if (isHealthy) "QUORUM OK" else "NO QUORUM",
+            text = label,
             color = Color.White,
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
