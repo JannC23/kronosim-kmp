@@ -121,9 +121,10 @@ execution where supported.
 ## Known verification scope
 
 - Desktop JVM: verified
-- Web/Wasm: verified
+- Desktop launch smoke test: verified
+- Web/Wasm: compiled successfully
 - JVM tests: verified
-- Android: not yet verified in this release
+- Android debug APK: compiled successfully; runtime testing needs a connected device or emulator
 - iOS: not yet verified on macOS in this environment
 
 Do not rely on those platform statuses until you have reproduced them locally.
