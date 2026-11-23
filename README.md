@@ -80,6 +80,10 @@ network link to sever or heal that link.
 |---|---|---|
 | ![Healthy cluster](docs/screenshots/01-healthy-cluster.png) | ![Split-brain partition](docs/screenshots/02-split-brain.png) | ![Client write](docs/screenshots/03-client-write.png) |
 
+| Network healed |
+|---|
+| ![Network healed and converged](docs/screenshots/04-network-healed.png) |
+
 ## Kotlin Multiplatform architecture
 
 The consensus engine, cluster model, partition analysis, and UI state live in
