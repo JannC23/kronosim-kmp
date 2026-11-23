@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -118,60 +119,141 @@ fun SimulatorScreen(
             }
 
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Button(
-                        onClick = { onUiEvent(SimulatorUiEvent.ProposeWrite) },
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Text("Client Write")
-                    }
-                    FilledTonalButton(
-                        onClick = { onUiEvent(SimulatorUiEvent.TogglePlayPause) },
-                    ) {
-                        Text(if (uiState.isRunning) "Pause" else "Resume")
-                    }
-                    OutlinedButton(
-                        onClick = { onUiEvent(SimulatorUiEvent.StepOnce) },
-                    ) {
-                        Text("Step")
-                    }
-                    OutlinedButton(
-                        onClick = { onUiEvent(SimulatorUiEvent.HealNetwork) },
-                    ) {
-                        Text("Heal Network")
-                    }
-                    OutlinedButton(
-                        onClick = {
-                            onUiEvent(SimulatorUiEvent.SaveCurrentTopology("Snapshot #${uiState.tick}"))
-                        },
-                    ) {
-                        Text("Save")
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    if (maxWidth < 600.dp) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(
+                                onClick = { onUiEvent(SimulatorUiEvent.ProposeWrite) },
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text("Client Write")
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                FilledTonalButton(
+                                    onClick = { onUiEvent(SimulatorUiEvent.TogglePlayPause) },
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Text(if (uiState.isRunning) "Pause" else "Resume")
+                                }
+                                OutlinedButton(
+                                    onClick = { onUiEvent(SimulatorUiEvent.StepOnce) },
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Text("Step")
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                OutlinedButton(
+                                    onClick = { onUiEvent(SimulatorUiEvent.HealNetwork) },
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Text("Heal Network")
+                                }
+                                OutlinedButton(
+                                    onClick = {
+                                        onUiEvent(SimulatorUiEvent.SaveCurrentTopology("Snapshot #${uiState.tick}"))
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Text("Save")
+                                }
+                            }
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Button(
+                                onClick = { onUiEvent(SimulatorUiEvent.ProposeWrite) },
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text("Client Write")
+                            }
+                            FilledTonalButton(
+                                onClick = { onUiEvent(SimulatorUiEvent.TogglePlayPause) },
+                            ) {
+                                Text(if (uiState.isRunning) "Pause" else "Resume")
+                            }
+                            OutlinedButton(
+                                onClick = { onUiEvent(SimulatorUiEvent.StepOnce) },
+                            ) {
+                                Text("Step")
+                            }
+                            OutlinedButton(
+                                onClick = { onUiEvent(SimulatorUiEvent.HealNetwork) },
+                            ) {
+                                Text("Heal Network")
+                            }
+                            OutlinedButton(
+                                onClick = {
+                                    onUiEvent(SimulatorUiEvent.SaveCurrentTopology("Snapshot #${uiState.tick}"))
+                                },
+                            ) {
+                                Text("Save")
+                            }
+                        }
                     }
                 }
             }
 
             item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    listOf(3, 5, 7).forEach { count ->
-                        FilterChip(
-                            selected = uiState.nodes.size == count,
-                            onClick = { onUiEvent(SimulatorUiEvent.ChangeNodeCount(count)) },
-                            label = { Text("${count}N") },
-                        )
-                    }
-                    ChaosScenario.entries.forEach { scenario ->
-                        AssistChip(
-                            onClick = { onUiEvent(SimulatorUiEvent.ScenarioSelected(scenario)) },
-                            label = { Text(scenario.displayName) },
-                        )
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    if (maxWidth < 600.dp) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                listOf(3, 5, 7).forEach { count ->
+                                    FilterChip(
+                                        selected = uiState.nodes.size == count,
+                                        onClick = { onUiEvent(SimulatorUiEvent.ChangeNodeCount(count)) },
+                                        label = { Text("${count}N") },
+                                    )
+                                }
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                ChaosScenario.entries.forEach { scenario ->
+                                    AssistChip(
+                                        onClick = { onUiEvent(SimulatorUiEvent.ScenarioSelected(scenario)) },
+                                        label = { Text(scenario.displayName) },
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            listOf(3, 5, 7).forEach { count ->
+                                FilterChip(
+                                    selected = uiState.nodes.size == count,
+                                    onClick = { onUiEvent(SimulatorUiEvent.ChangeNodeCount(count)) },
+                                    label = { Text("${count}N") },
+                                )
+                            }
+                            ChaosScenario.entries.forEach { scenario ->
+                                AssistChip(
+                                    onClick = { onUiEvent(SimulatorUiEvent.ScenarioSelected(scenario)) },
+                                    label = { Text(scenario.displayName) },
+                                )
+                            }
+                        }
                     }
                 }
             }
