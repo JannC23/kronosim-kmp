@@ -65,8 +65,8 @@ enum class ChaosScenario(
     val description: String,
 ) {
     HEALTHY_QUORUM(
-        displayName = "Healthy 5-Node Cluster",
-        description = "Balanced quorum with active leader heartbeats and log replication.",
+        displayName = "Healthy Cluster",
+        description = "Creates a healthy cluster using the currently selected 3, 5, or 7 node size.",
     ),
     LEADER_CRASH(
         displayName = "Leader Failover",

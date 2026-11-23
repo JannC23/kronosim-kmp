@@ -138,4 +138,17 @@ class ConsensusEngineTest {
 
         assertTrue(healed.links.none { it.isPartitioned })
     }
+
+    @Test
+    fun `healthy scenario preserves selected node count`() {
+        val engine = ConsensusEngine(Random(1))
+        val sevenNodes = engine.createTopology(7)
+
+        val healthy = engine.applyScenario(
+            sevenNodes,
+            ChaosScenario.HEALTHY_QUORUM,
+        )
+
+        assertEquals(7, healthy.nodes.size)
+    }
 }

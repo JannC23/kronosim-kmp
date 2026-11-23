@@ -70,7 +70,8 @@ class ConsensusEngine(
         current: ClusterSnapshot,
         scenario: ChaosScenario,
     ): ClusterSnapshot = when (scenario) {
-        ChaosScenario.HEALTHY_QUORUM -> createTopology(5)
+        ChaosScenario.HEALTHY_QUORUM ->
+            createTopology(current.nodes.size.coerceIn(MIN_NODES, MAX_NODES))
 
         ChaosScenario.LEADER_CRASH -> {
             val base = if (current.nodes.size < 5) createTopology(5) else current

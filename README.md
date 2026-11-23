@@ -90,6 +90,12 @@ network link to sever or heal that link.
 |---|---|---|
 | <img src="docs/screenshots/mobile/01-split-brain.png" alt="Split-brain on mobile" width="260"> | <img src="docs/screenshots/mobile/02-network-healed.png" alt="Network healed on mobile" width="260"> | <img src="docs/screenshots/mobile/03-stable-election.png" alt="Stable election on mobile" width="260"> |
 
+### Android emulator screenshots
+
+| Node crashed | Node recovered |
+|---|---|
+| <img src="docs/screenshots/android/02-n1-crashed.png" alt="N1 crashed on Android" width="260"> | <img src="docs/screenshots/android/03-n1-recovered.png" alt="N1 recovered on Android" width="260"> |
+
 ## Kotlin Multiplatform architecture
 
 The consensus engine, cluster model, partition analysis, and UI state live in

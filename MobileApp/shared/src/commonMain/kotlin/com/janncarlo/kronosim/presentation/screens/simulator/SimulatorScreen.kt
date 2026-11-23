@@ -112,7 +112,7 @@ fun SimulatorScreen(
 
             item {
                 Text(
-                    text = "Tap any node to crash/recover • Tap any link midpoint to sever/heal partition",
+                    text = "Tap a node to crash/recover • Tap a link midpoint to sever it",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -226,9 +226,14 @@ fun SimulatorScreen(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
                                 ChaosScenario.entries.forEach { scenario ->
+                                    val label = if (scenario == ChaosScenario.HEALTHY_QUORUM) {
+                                        "Healthy ${uiState.nodes.size}-Node Cluster"
+                                    } else {
+                                        scenario.displayName
+                                    }
                                     AssistChip(
                                         onClick = { onUiEvent(SimulatorUiEvent.ScenarioSelected(scenario)) },
-                                        label = { Text(scenario.displayName) },
+                                        label = { Text(label) },
                                     )
                                 }
                             }
@@ -248,9 +253,14 @@ fun SimulatorScreen(
                                 )
                             }
                             ChaosScenario.entries.forEach { scenario ->
+                                val label = if (scenario == ChaosScenario.HEALTHY_QUORUM) {
+                                    "Healthy ${uiState.nodes.size}-Node Cluster"
+                                } else {
+                                    scenario.displayName
+                                }
                                 AssistChip(
                                     onClick = { onUiEvent(SimulatorUiEvent.ScenarioSelected(scenario)) },
-                                    label = { Text(scenario.displayName) },
+                                    label = { Text(label) },
                                 )
                             }
                         }
