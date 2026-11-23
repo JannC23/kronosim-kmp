@@ -84,6 +84,12 @@ network link to sever or heal that link.
 |---|
 | ![Network healed and converged](docs/screenshots/04-network-healed.png) |
 
+### Mobile Web screenshots
+
+| Split-brain | Network healed | Stable election |
+|---|---|---|
+| <img src="docs/screenshots/mobile/01-split-brain.png" alt="Split-brain on mobile" width="260"> | <img src="docs/screenshots/mobile/02-network-healed.png" alt="Network healed on mobile" width="260"> | <img src="docs/screenshots/mobile/03-stable-election.png" alt="Stable election on mobile" width="260"> |
+
 ## Kotlin Multiplatform architecture
 
 The consensus engine, cluster model, partition analysis, and UI state live in
